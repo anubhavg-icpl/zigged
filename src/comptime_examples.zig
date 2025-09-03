@@ -56,7 +56,7 @@ pub fn demonstrateComptimeFunctions() void {
     print("8! computed at compile-time: {}\n", .{fact_8});
 }
 
-pub fn demonstrateGenericTypes() void {
+pub fn demonstrateGenericTypes() !void {
     print("\n=== Generic Types and Functions ===\n", .{});
     
     // Generic array sum function
@@ -119,9 +119,9 @@ pub fn demonstrateTypeIntrospection() void {
     
     // Get type information at compile time
     const type_info = @typeInfo(Point);
-    print("Point struct has {} fields:\n", .{type_info.Struct.fields.len});
+    print("Point struct has {} fields:\n", .{type_info.@"struct".fields.len});
     
-    inline for (type_info.Struct.fields) |field| {
+    inline for (type_info.@"struct".fields) |field| {
         print("  Field '{s}': {any}\n", .{ field.name, field.type });
     }
     
@@ -129,9 +129,9 @@ pub fn demonstrateTypeIntrospection() void {
     const HasField = struct {
         fn check(comptime T: type, comptime field_name: []const u8) bool {
             const info = @typeInfo(T);
-            if (info != .Struct) return false;
+            if (info != .@"struct") return false;
             
-            inline for (info.Struct.fields) |field| {
+            inline for (info.@"struct".fields) |field| {
                 if (std.mem.eql(u8, field.name, field_name)) {
                     return true;
                 }
@@ -182,16 +182,16 @@ pub fn demonstrateComptimeSwitch() void {
     const TypeProcessor = struct {
         fn process(comptime T: type, value: T) void {
             switch (@typeInfo(T)) {
-                .Int => |int_info| {
+                .int => |int_info| {
                     print("Integer value: {} (bits: {})\n", .{ value, int_info.bits });
                 },
-                .Float => |float_info| {
+                .float => |float_info| {
                     print("Float value: {d:.2} (bits: {})\n", .{ value, float_info.bits });
                 },
-                .Bool => {
+                .bool => {
                     print("Boolean value: {}\n", .{value});
                 },
-                .Pointer => |ptr_info| {
+                .pointer => |ptr_info| {
                     print("Pointer to {any}: {*}\n", .{ ptr_info.child, value });
                 },
                 else => {

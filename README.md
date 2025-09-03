@@ -58,14 +58,22 @@ hello-world/
 # Show help menu and available examples
 zig build run
 
-# Run specific examples interactively
+# Basic examples - Learn the fundamentals
 zig build run -- basic          # ⚡ Basic Zig syntax and operations
 zig build run -- memory         # 🧠 Memory management basics
 zig build run -- strings        # 📝 String operations
 zig build run -- arrays         # 📊 Array and slice examples
 
-# Run ALL examples in sequence  
-zig build run -- all            # 🎯 Complete walkthrough
+# Advanced examples - Deep dive into Zig features
+zig build run -- errors         # ⚠️ Error handling patterns
+zig build run -- file-io        # 📁 File I/O operations
+zig build run -- data           # 📊 Data structures (ArrayList, HashMap, etc.)
+zig build run -- concurrency    # 🔄 Threading and synchronization
+zig build run -- comptime       # ⚡ Compile-time programming
+
+# Run all examples
+zig build run -- all            # 🎯 All basic examples
+zig build run -- advanced       # 🚀 All advanced examples
 ```
 
 ### 🧪 **Testing the Example Files**  
@@ -115,29 +123,70 @@ rm -rf zig-out zig-cache
 
 ## 🧪 What the CLI Examples Teach
 
-### 1. **basic** - Basic Zig Syntax and Operations
+### Basic Examples
+
+#### 1. **basic** - Basic Zig Syntax and Operations
 - **Variables & Constants**: Understanding `var` vs `const`, type inference
 - **Control Flow**: for loops, if statements, basic iteration
 - **Basic Arithmetic**: Simple mathematical operations
 
-### 2. **memory** - Memory Management Basics
+#### 2. **memory** - Memory Management Basics
 - **GPA Allocator**: General Purpose Allocator usage  
 - **Dynamic Allocation**: Creating and freeing memory manually
 - **Array Operations**: Working with dynamically allocated arrays
 
-### 3. **strings** - String Operations  
+#### 3. **strings** - String Operations  
 - **String Formatting**: Using `std.fmt.allocPrint` for formatting
 - **String Comparison**: Using `std.mem.eql` for string equality
 - **String Literals**: Working with string constants and slices
 
-### 4. **arrays** - Array and Slice Examples
+#### 4. **arrays** - Array and Slice Examples
 - **Fixed Arrays**: Compile-time known size arrays
 - **Slices**: Views into arrays with runtime bounds
 - **Multi-dimensional Arrays**: Matrices and nested data structures
 
-### 5. **all** - Complete Learning Walkthrough
-- Runs all the above examples in sequence for comprehensive learning
-- Shows the progression from basic syntax to more complex concepts
+### Advanced Examples
+
+#### 5. **errors** - Error Handling Patterns
+- **Custom Error Types**: Defining application-specific errors
+- **Error Propagation**: try/catch patterns and error chaining
+- **Defer Cleanup**: Using defer for guaranteed resource cleanup
+- **Error Unions**: Working with optional error returns
+
+#### 6. **file-io** - File I/O Operations
+- **File Operations**: Create, read, write, append files
+- **Directory Management**: Create, iterate, delete directories
+- **Stream Operations**: Buffered reading and writing
+- **JSON Handling**: Basic JSON serialization
+
+#### 7. **data** - Data Structures
+- **Dynamic Arrays**: ArrayList operations and resizing
+- **Hash Maps**: StringHashMap and AutoHashMap usage
+- **Linked Lists**: Basic linked list implementation
+- **Queue & Stack**: Classic data structure implementations
+
+#### 8. **concurrency** - Threading and Synchronization
+- **Basic Threading**: Creating and managing threads
+- **Mutexes**: Protecting shared state with locks
+- **Atomic Operations**: Lock-free programming basics
+- **Producer-Consumer**: Classic concurrency pattern
+- **Channels**: Message passing between threads
+
+#### 9. **comptime** - Compile-time Programming
+- **Compile-time Evaluation**: Computing values at compile time
+- **Generic Types**: Creating reusable generic data structures
+- **Type Introspection**: Examining types at compile time
+- **Compile-time Code Generation**: Generating arrays and tables
+
+### Batch Commands
+
+#### 10. **all** - All Basic Examples
+- Runs examples 1-4 in sequence for fundamental learning
+- Perfect for beginners to understand core concepts
+
+#### 11. **advanced** - All Advanced Examples  
+- Runs examples 5-9 in sequence for comprehensive coverage
+- Ideal for understanding advanced Zig features
 
 ## 📚 Additional Learning Resources (Example Files)
 

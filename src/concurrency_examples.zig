@@ -17,7 +17,7 @@ pub fn demonstrateBasicThreads(allocator: std.mem.Allocator) !void {
         fn run(data: WorkerData) void {
             for (0..data.iterations) |i| {
                 print("Worker {}: iteration {}\n", .{ data.id, i });
-                std.time.sleep(100 * std.time.ns_per_ms); // 100ms
+                std.Thread.sleep(100 * std.time.ns_per_ms); // 100ms
             }
             print("Worker {} completed\n", .{data.id});
         }
@@ -30,7 +30,7 @@ pub fn demonstrateBasicThreads(allocator: std.mem.Allocator) !void {
     
     // Start threads
     for (threads, 0..) |*thread, i| {
-        const data = WorkerData{ .id = @intCast(i + 1), .iterations = 3 };
+        const data = WorkerData{ .id = @as(u32, @intCast(i + 1)), .iterations = 3 };
         thread.* = try Thread.spawn(.{}, worker_function, .{data});
     }
     
@@ -56,7 +56,7 @@ pub fn demonstrateMutex(allocator: std.mem.Allocator) !void {
             defer self.mutex.unlock();
             
             const old_value = self.value;
-            std.time.sleep(50 * std.time.ns_per_ms); // Simulate work
+            std.Thread.sleep(50 * std.time.ns_per_ms); // Simulate work
             self.value += amount;
             
             print("Worker {}: {} + {} = {}\n", .{ worker_id, old_value, amount, self.value });
@@ -85,7 +85,7 @@ pub fn demonstrateMutex(allocator: std.mem.Allocator) !void {
     
     // Start threads that increment counter
     for (threads, 0..) |*thread, i| {
-        thread.* = try Thread.spawn(.{}, counter_worker, .{ &counter, @intCast(i + 1), 5 });
+        thread.* = try Thread.spawn(.{}, counter_worker, .{ &counter, @as(u32, @intCast(i + 1)), 5 });
     }
     
     // Wait for all threads
@@ -126,7 +126,7 @@ pub fn demonstrateAtomics() !void {
     while (!done.load(.acquire)) {
         const current = atomic_counter.load(.acquire);
         print("Current atomic counter: {}\n", .{current});
-        std.time.sleep(200 * std.time.ns_per_ms);
+        std.Thread.sleep(200 * std.time.ns_per_ms);
     }
     
     thread1.join();
@@ -209,8 +209,8 @@ pub fn demonstrateProducerConsumer(allocator: std.mem.Allocator) !void {
     const producer = struct {
         fn run(buf: *Buffer, alloc: std.mem.Allocator) !void {
             for (1..11) |i| {
-                try buf.produce(alloc, @intCast(i));
-                std.time.sleep(100 * std.time.ns_per_ms);
+                try buf.produce(alloc, @as(i32, @intCast(i)));
+                std.Thread.sleep(100 * std.time.ns_per_ms);
             }
             buf.finish();
             print("Producer finished\n", .{});
@@ -221,7 +221,7 @@ pub fn demonstrateProducerConsumer(allocator: std.mem.Allocator) !void {
         fn run(buf: *Buffer, consumer_id: u32) void {
             while (buf.consume()) |item| {
                 print("Consumer {}: got {}\n", .{ consumer_id, item });
-                std.time.sleep(150 * std.time.ns_per_ms);
+                std.Thread.sleep(150 * std.time.ns_per_ms);
             }
             print("Consumer {} finished\n", .{consumer_id});
         }
@@ -301,7 +301,7 @@ pub fn demonstrateChannels(allocator: std.mem.Allocator) !void {
             for (messages) |msg| {
                 try ch.send(alloc, msg);
                 print("Sent: {s}\n", .{msg});
-                std.time.sleep(100 * std.time.ns_per_ms);
+                std.Thread.sleep(100 * std.time.ns_per_ms);
             }
             
             ch.close();
@@ -313,7 +313,7 @@ pub fn demonstrateChannels(allocator: std.mem.Allocator) !void {
         fn run(ch: *Channel) void {
             while (ch.receive()) |message| {
                 print("Received: {s}\n", .{message});
-                std.time.sleep(50 * std.time.ns_per_ms);
+                std.Thread.sleep(50 * std.time.ns_per_ms);
             }
             print("Receiver finished\n", .{});
         }

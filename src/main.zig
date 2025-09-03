@@ -1,6 +1,13 @@
 const std = @import("std");
 const print = std.debug.print;
 
+// Import all example modules
+const error_handling = @import("error_handling_examples.zig");
+const file_io = @import("file_io_examples.zig");
+const data_structures = @import("data_structures_examples.zig");
+const concurrency = @import("concurrency_examples.zig");
+const comptime_examples = @import("comptime_examples.zig");
+
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
@@ -13,11 +20,17 @@ pub fn main() !void {
         print("🦎 Zigged - Zig Learning Examples CLI\n\n", .{});
         print("Usage: zig build run -- [example]\n\n", .{});
         print("Available examples:\n", .{});
-        print("  basic     - Basic Zig syntax and operations\n", .{});
-        print("  memory    - Memory management basics\n", .{});
-        print("  strings   - String operations\n", .{});
-        print("  arrays    - Array and slice examples\n", .{});
-        print("  all       - Run all basic examples\n\n", .{});
+        print("  basic       - Basic Zig syntax and operations\n", .{});
+        print("  memory      - Memory management basics\n", .{});
+        print("  strings     - String operations\n", .{});
+        print("  arrays      - Array and slice examples\n", .{});
+        print("  errors      - Error handling patterns\n", .{});
+        print("  file-io     - File I/O operations\n", .{});
+        print("  data        - Data structures (ArrayList, HashMap, etc.)\n", .{});
+        print("  concurrency - Threading and synchronization\n", .{});
+        print("  comptime    - Compile-time programming\n", .{});
+        print("  all         - Run all basic examples\n", .{});
+        print("  advanced    - Run all advanced examples\n\n", .{});
         return;
     }
     
@@ -39,6 +52,47 @@ pub fn main() !void {
         print("\n📊 Array Examples\n", .{});
         print("=================\n", .{});
         demonstrateArrays();
+    } else if (std.mem.eql(u8, example, "errors")) {
+        print("\n⚠️ Error Handling Examples\n", .{});
+        print("=========================\n", .{});
+        error_handling.demonstrateBasicErrors();
+        try error_handling.demonstrateErrorPropagation();
+        try error_handling.demonstrateErrorUnions();
+        try error_handling.demonstrateDefer();
+        error_handling.demonstrateErrorReturn();
+        error_handling.demonstrateOptionals();
+    } else if (std.mem.eql(u8, example, "file-io")) {
+        print("\n📁 File I/O Examples\n", .{});
+        print("===================\n", .{});
+        try file_io.demonstrateFileOperations(allocator);
+        try file_io.demonstrateDirectoryOperations();
+        try file_io.demonstrateFileStreams(allocator);
+    } else if (std.mem.eql(u8, example, "data")) {
+        print("\n📊 Data Structure Examples\n", .{});
+        print("=========================\n", .{});
+        data_structures.demonstrateArrays();
+        try data_structures.demonstrateArrayList(allocator);
+        try data_structures.demonstrateHashMaps(allocator);
+        try data_structures.demonstrateLinkedList(allocator);
+        try data_structures.demonstrateQueue(allocator);
+        try data_structures.demonstrateStack(allocator);
+    } else if (std.mem.eql(u8, example, "concurrency")) {
+        print("\n🔄 Concurrency Examples\n", .{});
+        print("=======================\n", .{});
+        try concurrency.demonstrateBasicThreads(allocator);
+        try concurrency.demonstrateMutex(allocator);
+        try concurrency.demonstrateAtomics();
+        try concurrency.demonstrateProducerConsumer(allocator);
+        try concurrency.demonstrateChannels(allocator);
+    } else if (std.mem.eql(u8, example, "comptime")) {
+        print("\n⚡ Compile-time Programming Examples\n", .{});
+        print("====================================\n", .{});
+        comptime_examples.demonstrateComptimeBasics();
+        comptime_examples.demonstrateComptimeFunctions();
+        try comptime_examples.demonstrateGenericTypes();
+        comptime_examples.demonstrateTypeIntrospection();
+        comptime_examples.demonstrateComptimeArrays();
+        comptime_examples.demonstrateComptimeSwitch();
     } else if (std.mem.eql(u8, example, "all")) {
         print("\n🚀 All Basic Examples\n", .{});
         print("=====================\n\n", .{});
@@ -55,7 +109,27 @@ pub fn main() !void {
         print("\n📊 Arrays and Slices:\n", .{});
         demonstrateArrays();
         
-        print("\n✅ All examples completed!\n", .{});
+        print("\n✅ All basic examples completed!\n", .{});
+    } else if (std.mem.eql(u8, example, "advanced")) {
+        print("\n🚀 All Advanced Examples\n", .{});
+        print("========================\n\n", .{});
+        
+        print("⚠️ Error Handling:\n", .{});
+        error_handling.demonstrateBasicErrors();
+        
+        print("\n📁 File I/O:\n", .{});
+        try file_io.demonstrateFileOperations(allocator);
+        
+        print("\n📊 Data Structures:\n", .{});
+        data_structures.demonstrateArrays();
+        
+        print("\n🔄 Concurrency:\n", .{});
+        try concurrency.demonstrateBasicThreads(allocator);
+        
+        print("\n⚡ Compile-time Programming:\n", .{});
+        comptime_examples.demonstrateComptimeBasics();
+        
+        print("\n✅ All advanced examples completed!\n", .{});
     } else {
         print("❌ Unknown example: '{s}'\n", .{example});
         print("Run without arguments to see available examples.\n", .{});

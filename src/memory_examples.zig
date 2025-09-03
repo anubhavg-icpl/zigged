@@ -33,7 +33,7 @@ pub fn demonstrateAllocators() !void {
     arena_strings[0] = "Hello";
     arena_strings[1] = "Zig";
     arena_strings[2] = "World";
-    print("Arena strings: {s}\n", .{arena_strings});
+    print("Arena strings: {s}, {s}, {s}\n", .{ arena_strings[0], arena_strings[1], arena_strings[2] });
 }
 
 pub fn demonstrateSlices() void {

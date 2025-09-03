@@ -3,7 +3,7 @@ const print = std.debug.print;
 const ArrayList = std.ArrayList;
 
 pub fn demonstrateStringBasics() void {
-    print("=== String Basics ===\n");
+    print("=== String Basics ===\n", .{});
     
     // String literals
     const hello = "Hello, World!";
@@ -19,7 +19,7 @@ pub fn demonstrateStringBasics() void {
 }
 
 pub fn demonstrateStringFormatting(allocator: std.mem.Allocator) !void {
-    print("=== String Formatting ===\n");
+    print("=== String Formatting ===\n", .{});
     
     const name = "Anubhav";
     const age = 25;
@@ -37,13 +37,13 @@ pub fn demonstrateStringFormatting(allocator: std.mem.Allocator) !void {
 }
 
 pub fn demonstrateStringOperations(_: std.mem.Allocator) !void {
-    print("\n=== String Operations ===\n");
+    print("\n=== String Operations ===\n", .{});
     
     const text = "Hello,Zig,Programming,Language";
     
     // Split string
-    var split_iterator = std.mem.split(u8, text, ",");
-    print("Split by comma:\n");
+    var split_iterator = std.mem.splitSequence(u8, text, ",");
+    print("Split by comma:\n", .{});
     while (split_iterator.next()) |part| {
         print("  '{s}'\n", .{part});
     }
@@ -53,7 +53,7 @@ pub fn demonstrateStringOperations(_: std.mem.Allocator) !void {
     const str2 = "banana";
     const str3 = "apple";
     
-    print("\nString comparisons:\n");
+    print("\nString comparisons:\n", .{});
     print("'{s}' == '{s}': {}\n", .{ str1, str2, std.mem.eql(u8, str1, str2) });
     print("'{s}' == '{s}': {}\n", .{ str1, str3, std.mem.eql(u8, str1, str3) });
     
@@ -70,27 +70,27 @@ pub fn demonstrateStringOperations(_: std.mem.Allocator) !void {
 }
 
 pub fn demonstrateStringBuilder(allocator: std.mem.Allocator) !void {
-    print("\n=== String Builder (ArrayList) ===\n");
+    print("\n=== String Builder (ArrayList) ===\n", .{});
     
-    var string_builder = ArrayList(u8).init(allocator);
-    defer string_builder.deinit();
+    var string_builder = ArrayList(u8){};
+    defer string_builder.deinit(allocator);
     
-    try string_builder.appendSlice("Building ");
-    try string_builder.appendSlice("a ");
-    try string_builder.appendSlice("string ");
-    try string_builder.appendSlice("dynamically!");
+    try string_builder.appendSlice(allocator, "Building ");
+    try string_builder.appendSlice(allocator, "a ");
+    try string_builder.appendSlice(allocator, "string ");
+    try string_builder.appendSlice(allocator, "dynamically!");
     
     print("Built string: {s}\n", .{string_builder.items});
     
     // Writer interface
-    const writer = string_builder.writer();
+    const writer = string_builder.writer(allocator);
     try writer.print(" Added number: {}", .{42});
     
     print("After writer: {s}\n", .{string_builder.items});
 }
 
 pub fn demonstrateUnicodeStrings() !void {
-    print("\n=== Unicode Strings ===\n");
+    print("\n=== Unicode Strings ===\n", .{});
     
     const unicode_text = "Hello 🦎 Zig! 🚀 नमस्ते";
     print("Unicode string: {s}\n", .{unicode_text});
@@ -101,12 +101,12 @@ pub fn demonstrateUnicodeStrings() !void {
     print("Unicode length: {}\n", .{unicode_len});
     
     // Iterate over code points
-    print("Code points: ");
+    print("Code points: ", .{});
     var iterator = (try std.unicode.Utf8View.init(unicode_text)).iterator();
     while (iterator.nextCodepoint()) |codepoint| {
         print("U+{X} ", .{codepoint});
     }
-    print("\n");
+    print("\n", .{});
 }
 
 test "string operations" {

@@ -5,7 +5,7 @@ const HashMap = std.HashMap;
 const AutoHashMap = std.AutoHashMap;
 
 pub fn demonstrateArrays() void {
-    print("=== Arrays and Slices ===\n");
+    print("=== Arrays and Slices ===\n", .{});
     
     // Fixed-size arrays
     const fixed_array = [5]i32{ 1, 2, 3, 4, 5 };
@@ -22,7 +22,7 @@ pub fn demonstrateArrays() void {
         [_]i32{ 7, 8, 9 },
     };
     
-    print("Matrix:\n");
+    print("Matrix:\n", .{});
     for (matrix) |row| {
         print("  {any}\n", .{row});
     }
@@ -34,21 +34,21 @@ pub fn demonstrateArrays() void {
 }
 
 pub fn demonstrateArrayList(allocator: std.mem.Allocator) !void {
-    print("\n=== Dynamic Arrays (ArrayList) ===\n");
+    print("\n=== Dynamic Arrays (ArrayList) ===\n", .{});
     
-    var numbers = ArrayList(i32).init(allocator);
-    defer numbers.deinit();
+    var numbers = ArrayList(i32){};
+    defer numbers.deinit(allocator);
     
     // Add elements
-    try numbers.append(10);
-    try numbers.append(20);
-    try numbers.appendSlice(&[_]i32{ 30, 40, 50 });
+    try numbers.append(allocator, 10);
+    try numbers.append(allocator, 20);
+    try numbers.appendSlice(allocator, &[_]i32{ 30, 40, 50 });
     
     print("ArrayList: {any}\n", .{numbers.items});
     print("Length: {}, Capacity: {}\n", .{ numbers.items.len, numbers.capacity });
     
     // Insert and remove
-    try numbers.insert(2, 25);
+    try numbers.insert(allocator, 2, 25);
     print("After insert at index 2: {any}\n", .{numbers.items});
     
     const removed = numbers.orderedRemove(1);
@@ -58,12 +58,12 @@ pub fn demonstrateArrayList(allocator: std.mem.Allocator) !void {
     const last = numbers.pop();
     print("Popped: {}, remaining: {any}\n", .{ last, numbers.items });
     
-    try numbers.resize(10);
+    try numbers.resize(allocator, 10);
     print("Resized to 10 (filled with undefined): length = {}\n", .{numbers.items.len});
 }
 
 pub fn demonstrateHashMaps(allocator: std.mem.Allocator) !void {
-    print("\n=== Hash Maps ===\n");
+    print("\n=== Hash Maps ===\n", .{});
     
     // String to integer map
     var word_count = AutoHashMap([]const u8, i32).init(allocator);
@@ -81,7 +81,7 @@ pub fn demonstrateHashMaps(allocator: std.mem.Allocator) !void {
         }
     }
     
-    print("Word counts:\n");
+    print("Word counts:\n", .{});
     var iterator = word_count.iterator();
     while (iterator.next()) |entry| {
         print("  '{s}': {}\n", .{ entry.key_ptr.*, entry.value_ptr.* });
@@ -109,7 +109,7 @@ pub fn demonstrateHashMaps(allocator: std.mem.Allocator) !void {
     try point_map.put(Point{ .x = 1, .y = 1 }, "diagonal");
     try point_map.put(Point{ .x = -1, .y = 0 }, "left");
     
-    print("\nPoint map:\n");
+    print("\nPoint map:\n", .{});
     var point_iterator = point_map.iterator();
     while (point_iterator.next()) |entry| {
         print("  ({}, {}): {s}\n", .{ entry.key_ptr.x, entry.key_ptr.y, entry.value_ptr.* });
@@ -117,7 +117,7 @@ pub fn demonstrateHashMaps(allocator: std.mem.Allocator) !void {
 }
 
 pub fn demonstrateLinkedList(allocator: std.mem.Allocator) !void {
-    print("\n=== Linked Lists ===\n");
+    print("\n=== Linked Lists ===\n", .{});
     
     const Node = struct {
         data: i32,
@@ -134,13 +134,13 @@ pub fn demonstrateLinkedList(allocator: std.mem.Allocator) !void {
     node2.next = &node3;
     
     // Traverse and print
-    print("Linked list: ");
+    print("Linked list: ", .{});
     var current: ?*Node = &node1;
     while (current) |node| {
         print("{} ", .{node.data});
         current = node.next;
     }
-    print("\n");
+    print("\n", .{});
     
     // Using std.SinglyLinkedList
     const SLL = std.SinglyLinkedList(i32);
@@ -154,17 +154,17 @@ pub fn demonstrateLinkedList(allocator: std.mem.Allocator) !void {
         sll.prepend(node);
     }
     
-    print("SinglyLinkedList: ");
+    print("SinglyLinkedList: ", .{});
     var sll_current = sll.first;
     while (sll_current) |node| {
         print("{} ", .{node.data});
         sll_current = node.next;
     }
-    print("\n");
+    print("\n", .{});
 }
 
 pub fn demonstrateQueue(allocator: std.mem.Allocator) !void {
-    print("\n=== Queue Implementation ===\n");
+    print("\n=== Queue Implementation ===\n", .{});
     
     const Queue = struct {
         items: ArrayList(i32),
@@ -173,15 +173,16 @@ pub fn demonstrateQueue(allocator: std.mem.Allocator) !void {
         const Self = @This();
         
         pub fn init(alloc: std.mem.Allocator) Self {
-            return Self{ .items = ArrayList(i32).init(alloc) };
+            _ = alloc;
+            return Self{ .items = ArrayList(i32){} };
         }
         
-        pub fn deinit(self: *Self) void {
-            self.items.deinit();
+        pub fn deinit(self: *Self, alloc: std.mem.Allocator) void {
+            self.items.deinit(alloc);
         }
         
-        pub fn enqueue(self: *Self, item: i32) !void {
-            try self.items.append(item);
+        pub fn enqueue(self: *Self, alloc: std.mem.Allocator, item: i32) !void {
+            try self.items.append(alloc, item);
         }
         
         pub fn dequeue(self: *Self) ?i32 {
@@ -211,16 +212,16 @@ pub fn demonstrateQueue(allocator: std.mem.Allocator) !void {
     };
     
     var queue = Queue.init(allocator);
-    defer queue.deinit();
+    defer queue.deinit(allocator);
     
     // Enqueue items
-    try queue.enqueue(1);
-    try queue.enqueue(2);
-    try queue.enqueue(3);
-    try queue.enqueue(4);
-    try queue.enqueue(5);
+    try queue.enqueue(allocator, 1);
+    try queue.enqueue(allocator, 2);
+    try queue.enqueue(allocator, 3);
+    try queue.enqueue(allocator, 4);
+    try queue.enqueue(allocator, 5);
     
-    print("Queue operations:\n");
+    print("Queue operations:\n", .{});
     print("Peek: {?}\n", .{queue.peek()});
     
     // Dequeue items
@@ -230,15 +231,15 @@ pub fn demonstrateQueue(allocator: std.mem.Allocator) !void {
 }
 
 pub fn demonstrateStack(allocator: std.mem.Allocator) !void {
-    print("\n=== Stack Implementation ===\n");
+    print("\n=== Stack Implementation ===\n", .{});
     
-    var stack = ArrayList([]const u8).init(allocator);
-    defer stack.deinit();
+    var stack = ArrayList([]const u8){};
+    defer stack.deinit(allocator);
     
     // Push items
-    try stack.append("first");
-    try stack.append("second");
-    try stack.append("third");
+    try stack.append(allocator, "first");
+    try stack.append(allocator, "second");
+    try stack.append(allocator, "third");
     
     print("Stack: {s}\n", .{stack.items});
     

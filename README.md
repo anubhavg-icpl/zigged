@@ -1,14 +1,14 @@
-# Zigged - Zig Learning Project 🚀
+# Zigged - Zig Learning Project 🦎
 
-A comprehensive Zig learning project by Anubhav showcasing fundamental concepts, build system, and testing in the Zig programming language.
+A comprehensive interactive Zig learning CLI by Anubhav showcasing fundamental concepts through hands-on examples.
 
 ## 📋 Project Overview
 
-This project demonstrates a well-structured Zig application with:
-- **Executable**: A simple "Hello World" style application with custom messaging
-- **Library Module**: Reusable functions with proper module organization  
+This project is a fully functional CLI application that teaches Zig programming through interactive examples:
+- **Interactive CLI**: Learn by running specific examples with immediate feedback
+- **Comprehensive Examples**: From basic syntax to advanced memory management
 - **Testing Suite**: Unit tests and fuzz testing examples
-- **Build System**: Complete Zig build configuration with multiple targets
+- **Build System**: Complete Zig build configuration supporting the CLI interface
 
 ## 🏗️ Project Structure
 
@@ -34,8 +34,9 @@ hello-world/
 ## ✨ Features
 
 ### Main Application (`src/main.zig`)
-- **Custom Print Statement**: "All your codebase are belong to us" message
-- **Module Integration**: Imports and uses the custom `hello_world` module
+- **Interactive CLI Interface**: Command-line argument parsing for example selection
+- **Integrated Examples**: All basic examples built into the main application
+- **Learning-Focused**: Clear help menu and structured example progression
 - **Unit Testing**: Simple ArrayList test with memory management
 - **Fuzz Testing**: Advanced fuzzing example to find edge cases
 
@@ -58,30 +59,27 @@ hello-world/
 zig build run
 
 # Run specific examples interactively
-zig build run -- memory         # 🧠 Memory management
-zig build run -- strings        # 📝 String operations  
-zig build run -- file-io        # 📁 File I/O operations
-zig build run -- errors         # ⚠️  Error handling
-zig build run -- data           # 📊 Data structures
-zig build run -- concurrency    # 🔄 Threading
-zig build run -- comptime       # ⚡ Compile-time programming
+zig build run -- basic          # ⚡ Basic Zig syntax and operations
+zig build run -- memory         # 🧠 Memory management basics
+zig build run -- strings        # 📝 String operations
+zig build run -- arrays         # 📊 Array and slice examples
 
-# Run ALL examples in sequence
+# Run ALL examples in sequence  
 zig build run -- all            # 🎯 Complete walkthrough
 ```
 
-### 🧪 **Individual Example Testing**  
-Test specific topics using build commands:
+### 🧪 **Testing the Example Files**  
+Test the underlying example files individually:
 
 ```bash
-# Individual test commands
-zig build test-memory            # Memory management only
-zig build test-strings           # String manipulation only  
-zig build test-file-io           # File I/O operations only
-zig build test-error-handling    # Error handling patterns only
-zig build test-data-structures   # Data structures only
-zig build test-concurrency       # Threading/sync only
-zig build test-comptime          # Compile-time programming only
+# Individual test commands for example files
+zig build test-memory            # Memory management examples
+zig build test-strings           # String manipulation examples  
+zig build test-file-io           # File I/O operation examples
+zig build test-error-handling    # Error handling pattern examples
+zig build test-data-structures   # Data structure examples
+zig build test-concurrency       # Threading and concurrency examples
+zig build test-comptime          # Compile-time programming examples
 
 # Run all tests (traditional)
 zig build test                   # Everything at once
@@ -115,42 +113,43 @@ zig build test -- --fuzz
 rm -rf zig-out zig-cache
 ```
 
-## 🧪 What Each Example Teaches
+## 🧪 What the CLI Examples Teach
 
-### 1. Memory Management (`memory_examples.zig`)
-- **GPA & Arena Allocators**: Different allocation strategies
-- **Slices & Pointers**: Memory views and references
-- **Manual Memory Management**: Create, destroy, alloc, free
+### 1. **basic** - Basic Zig Syntax and Operations
+- **Variables & Constants**: Understanding `var` vs `const`, type inference
+- **Control Flow**: for loops, if statements, basic iteration
+- **Basic Arithmetic**: Simple mathematical operations
 
-### 2. String Operations (`strings_examples.zig`)  
-- **String Formatting**: bufPrint, allocPrint patterns
-- **String Manipulation**: split, compare, contains, case conversion
-- **Unicode Handling**: UTF-8 processing and code points
+### 2. **memory** - Memory Management Basics
+- **GPA Allocator**: General Purpose Allocator usage  
+- **Dynamic Allocation**: Creating and freeing memory manually
+- **Array Operations**: Working with dynamically allocated arrays
 
-### 3. File I/O (`file_io_examples.zig`)
-- **File Operations**: Create, read, write, append files
-- **Directory Management**: Create, iterate, delete directories
-- **JSON Handling**: Serialize and deserialize data
+### 3. **strings** - String Operations  
+- **String Formatting**: Using `std.fmt.allocPrint` for formatting
+- **String Comparison**: Using `std.mem.eql` for string equality
+- **String Literals**: Working with string constants and slices
 
-### 4. Error Handling (`error_handling_examples.zig`)
-- **Custom Error Types**: Define application-specific errors
-- **Error Propagation**: try/catch patterns and chaining
-- **Resource Cleanup**: defer statements for proper cleanup
+### 4. **arrays** - Array and Slice Examples
+- **Fixed Arrays**: Compile-time known size arrays
+- **Slices**: Views into arrays with runtime bounds
+- **Multi-dimensional Arrays**: Matrices and nested data structures
 
-### 5. Data Structures (`data_structures_examples.zig`)
-- **Dynamic Arrays**: ArrayList operations and resizing
-- **Hash Maps**: Key-value storage with custom hash functions
-- **Custom Structures**: Queue, Stack, and LinkedList implementations
+### 5. **all** - Complete Learning Walkthrough
+- Runs all the above examples in sequence for comprehensive learning
+- Shows the progression from basic syntax to more complex concepts
 
-### 6. Concurrency (`concurrency_examples.zig`)
-- **Threading**: Create and manage multiple threads
-- **Synchronization**: Mutexes, atomic operations, condition variables
-- **Communication**: Producer-consumer and channel patterns
+## 📚 Additional Learning Resources (Example Files)
 
-### 7. Compile-time Programming (`comptime_examples.zig`)
-- **Generic Types**: Create reusable data structures
-- **Type Introspection**: Examine types at compile-time
-- **Compile-time Computation**: Calculate values during compilation
+While the CLI focuses on core concepts, the project includes comprehensive example files covering advanced topics:
+
+- `memory_examples.zig` - Advanced memory management with GPA & Arena allocators
+- `strings_examples.zig` - Unicode handling, string manipulation, formatting
+- `file_io_examples.zig` - File operations, directories, JSON processing  
+- `error_handling_examples.zig` - Custom errors, propagation, cleanup patterns
+- `data_structures_examples.zig` - ArrayList, HashMap, LinkedList, Queue, Stack
+- `concurrency_examples.zig` - Threading, mutexes, atomics, producer-consumer
+- `comptime_examples.zig` - Compile-time programming, generics, type introspection
 
 ## 📦 Dependencies
 

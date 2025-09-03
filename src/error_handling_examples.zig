@@ -15,10 +15,10 @@ const FileError = error{
 };
 
 // Combined error set
-const AppError = MathError || FileError || std.mem.Allocator.Error;
+const AppError = MathError || FileError || std.mem.Allocator.Error || std.fmt.ParseIntError;
 
 pub fn demonstrateBasicErrors() void {
-    print("=== Basic Error Handling ===\n");
+    print("=== Basic Error Handling ===\n", .{});
     
     // Function that can return an error
     const divide = struct {
@@ -44,7 +44,7 @@ pub fn demonstrateBasicErrors() void {
 }
 
 pub fn demonstrateErrorPropagation() AppError!void {
-    print("\n=== Error Propagation ===\n");
+    print("\n=== Error Propagation ===\n", .{});
     
     const safeDivide = struct {
         fn call(a: f32, b: f32) MathError!f32 {
@@ -92,7 +92,7 @@ pub fn demonstrateErrorPropagation() AppError!void {
 }
 
 pub fn demonstrateErrorUnions() !void {
-    print("\n=== Error Unions and Switch ===\n");
+    print("\n=== Error Unions and Switch ===\n", .{});
     
     const parseNumber = struct {
         fn call(str: []const u8) AppError!i32 {
@@ -113,21 +113,18 @@ pub fn demonstrateErrorUnions() !void {
     const test_strings = [_][]const u8{ "123", "abc", "999999999999999999999" };
     
     for (test_strings) |str| {
-        switch (parseNumber(str)) {
+        const result = parseNumber(str);
+        if (result) |num| {
+            print("Parsed '{s}' -> {}\n", .{ str, num });
+        } else |err| switch (err) {
             MathError.Overflow => print("Handled overflow for '{s}'\n", .{str}),
-            else => |result| {
-                if (result) |num| {
-                    print("Parsed '{s}' -> {}\n", .{ str, num });
-                } else |err| {
-                    print("Parse error for '{s}': {}\n", .{ str, err });
-                }
-            },
+            else => print("Parse error for '{s}': {}\n", .{ str, err }),
         }
     }
 }
 
 pub fn demonstrateDefer() AppError!void {
-    print("\n=== Defer and Error Cleanup ===\n");
+    print("\n=== Defer and Error Cleanup ===\n", .{});
     
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
@@ -143,37 +140,37 @@ pub fn demonstrateDefer() AppError!void {
             defer alloc.free(buffer2);
             
             // Defer with error handling
-            defer print("Cleanup completed\n");
+            defer print("Cleanup completed\n", .{});
             
-            print("Processing data...\n");
+            print("Processing data...\n", .{});
             
             if (should_fail) {
-                print("Simulating error during processing\n");
+                print("Simulating error during processing\n", .{});
                 return FileError.PermissionDenied;
             }
             
-            print("Processing successful\n");
+            print("Processing successful\n", .{});
         }
     }.call;
     
     // Success case
-    print("Case 1 - Success:\n");
+    print("Case 1 - Success:\n", .{});
     if (processData(allocator, false)) {
-        print("Operation completed successfully\n");
+        print("Operation completed successfully\n", .{});
     } else |err| {
         print("Operation failed: {}\n", .{err});
     }
     
-    print("\nCase 2 - Failure:\n");
+    print("\nCase 2 - Failure:\n", .{});
     if (processData(allocator, true)) {
-        print("Operation completed successfully\n");
+        print("Operation completed successfully\n", .{});
     } else |err| {
         print("Operation failed: {}\n", .{err});
     }
 }
 
 pub fn demonstrateErrorReturn() void {
-    print("\n=== Error Return Patterns ===\n");
+    print("\n=== Error Return Patterns ===\n", .{});
     
     const Result = union(enum) {
         success: i32,
@@ -204,7 +201,7 @@ pub fn demonstrateErrorReturn() void {
 }
 
 pub fn demonstrateOptionals() void {
-    print("\n=== Optionals vs Errors ===\n");
+    print("\n=== Optionals vs Errors ===\n", .{});
     
     const findIndex = struct {
         fn call(slice: []const i32, target: i32) ?usize {
@@ -221,7 +218,7 @@ pub fn demonstrateOptionals() void {
     if (findIndex(numbers[0..], 30)) |index| {
         print("Found 30 at index {}\n", .{index});
     } else {
-        print("30 not found\n");
+        print("30 not found\n", .{});
     }
     
     // Optional with default

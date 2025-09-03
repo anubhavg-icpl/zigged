@@ -2,7 +2,7 @@ const std = @import("std");
 const print = std.debug.print;
 
 pub fn demonstrateComptimeBasics() void {
-    print("=== Compile-time Basics ===\n");
+    print("=== Compile-time Basics ===\n", .{});
     
     // Compile-time constants
     const comptime_value = comptime 5 * 10 + 3;
@@ -26,7 +26,7 @@ pub fn demonstrateComptimeBasics() void {
 }
 
 pub fn demonstrateComptimeFunctions() void {
-    print("\n=== Compile-time Functions ===\n");
+    print("\n=== Compile-time Functions ===\n", .{});
     
     const fibonacci = comptime blk: {
         const fib = struct {
@@ -57,7 +57,7 @@ pub fn demonstrateComptimeFunctions() void {
 }
 
 pub fn demonstrateGenericTypes() void {
-    print("\n=== Generic Types and Functions ===\n");
+    print("\n=== Generic Types and Functions ===\n", .{});
     
     // Generic array sum function
     const ArraySum = struct {
@@ -109,7 +109,7 @@ pub fn demonstrateGenericTypes() void {
 }
 
 pub fn demonstrateTypeIntrospection() void {
-    print("\n=== Type Introspection ===\n");
+    print("\n=== Type Introspection ===\n", .{});
     
     const Point = struct {
         x: f32,
@@ -145,7 +145,7 @@ pub fn demonstrateTypeIntrospection() void {
 }
 
 pub fn demonstrateComptimeArrays() void {
-    print("\n=== Compile-time Array Generation ===\n");
+    print("\n=== Compile-time Array Generation ===\n", .{});
     
     // Generate multiplication table at compile time
     const table = comptime blk: {
@@ -159,7 +159,7 @@ pub fn demonstrateComptimeArrays() void {
         break :blk result;
     };
     
-    print("5x5 multiplication table (compile-time generated):\n");
+    print("5x5 multiplication table (compile-time generated):\n", .{});
     for (table, 0..) |row, i| {
         print("Row {}: {any}\n", .{ i + 1, row });
     }
@@ -177,7 +177,7 @@ pub fn demonstrateComptimeArrays() void {
 }
 
 pub fn demonstrateComptimeSwitch() void {
-    print("\n=== Compile-time Switch ===\n");
+    print("\n=== Compile-time Switch ===\n", .{});
     
     const TypeProcessor = struct {
         fn process(comptime T: type, value: T) void {

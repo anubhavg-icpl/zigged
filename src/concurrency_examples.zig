@@ -6,7 +6,7 @@ const Condition = std.Thread.Condition;
 const Atomic = std.atomic.Value;
 
 pub fn demonstrateBasicThreads(allocator: std.mem.Allocator) !void {
-    print("=== Basic Threading ===\n");
+    print("=== Basic Threading ===\n", .{});
     
     const WorkerData = struct {
         id: u32,
@@ -39,11 +39,11 @@ pub fn demonstrateBasicThreads(allocator: std.mem.Allocator) !void {
         thread.join();
     }
     
-    print("All threads completed\n\n");
+    print("All threads completed\n\n", .{});
 }
 
 pub fn demonstrateMutex(allocator: std.mem.Allocator) !void {
-    print("=== Mutex and Shared State ===\n");
+    print("=== Mutex and Shared State ===\n", .{});
     
     const SharedCounter = struct {
         mutex: Mutex = .{},
@@ -97,7 +97,7 @@ pub fn demonstrateMutex(allocator: std.mem.Allocator) !void {
 }
 
 pub fn demonstrateAtomics() !void {
-    print("=== Atomic Operations ===\n");
+    print("=== Atomic Operations ===\n", .{});
     
     var atomic_counter = Atomic(u32).init(0);
     var done = Atomic(bool).init(false);
@@ -137,7 +137,7 @@ pub fn demonstrateAtomics() !void {
 }
 
 pub fn demonstrateProducerConsumer(allocator: std.mem.Allocator) !void {
-    print("=== Producer-Consumer Pattern ===\n");
+    print("=== Producer-Consumer Pattern ===\n", .{});
     
     const Buffer = struct {
         mutex: Mutex = .{},
@@ -148,18 +148,18 @@ pub fn demonstrateProducerConsumer(allocator: std.mem.Allocator) !void {
         
         const Self = @This();
         
-        pub fn init(alloc: std.mem.Allocator, size: usize) Self {
+        pub fn init(_: std.mem.Allocator, size: usize) Self {
             return Self{
-                .data = std.ArrayList(i32).init(alloc),
+                .data = std.ArrayList(i32){},
                 .max_size = size,
             };
         }
         
-        pub fn deinit(self: *Self) void {
-            self.data.deinit();
+        pub fn deinit(self: *Self, alloc: std.mem.Allocator) void {
+            self.data.deinit(alloc);
         }
         
-        pub fn produce(self: *Self, item: i32) !void {
+        pub fn produce(self: *Self, alloc: std.mem.Allocator, item: i32) !void {
             self.mutex.lock();
             defer self.mutex.unlock();
             
@@ -168,7 +168,7 @@ pub fn demonstrateProducerConsumer(allocator: std.mem.Allocator) !void {
                 self.condition.wait(&self.mutex);
             }
             
-            try self.data.append(item);
+            try self.data.append(alloc, item);
             print("Produced: {} (buffer size: {})\n", .{ item, self.data.items.len });
             
             self.condition.signal();
@@ -204,16 +204,16 @@ pub fn demonstrateProducerConsumer(allocator: std.mem.Allocator) !void {
     };
     
     var buffer = Buffer.init(allocator, 5);
-    defer buffer.deinit();
+    defer buffer.deinit(allocator);
     
     const producer = struct {
-        fn run(buf: *Buffer) !void {
+        fn run(buf: *Buffer, alloc: std.mem.Allocator) !void {
             for (1..11) |i| {
-                try buf.produce(@intCast(i));
+                try buf.produce(alloc, @intCast(i));
                 std.time.sleep(100 * std.time.ns_per_ms);
             }
             buf.finish();
-            print("Producer finished\n");
+            print("Producer finished\n", .{});
         }
     }.run;
     
@@ -228,7 +228,7 @@ pub fn demonstrateProducerConsumer(allocator: std.mem.Allocator) !void {
     }.run;
     
     // Start producer and consumers
-    var producer_thread = try Thread.spawn(.{}, producer, .{&buffer});
+    var producer_thread = try Thread.spawn(.{}, producer, .{ &buffer, allocator });
     var consumer1_thread = try Thread.spawn(.{}, consumer, .{ &buffer, 1 });
     var consumer2_thread = try Thread.spawn(.{}, consumer, .{ &buffer, 2 });
     
@@ -236,11 +236,11 @@ pub fn demonstrateProducerConsumer(allocator: std.mem.Allocator) !void {
     consumer1_thread.join();
     consumer2_thread.join();
     
-    print("Producer-Consumer example completed\n\n");
+    print("Producer-Consumer example completed\n\n", .{});
 }
 
 pub fn demonstrateChannels(allocator: std.mem.Allocator) !void {
-    print("=== Channel-like Communication ===\n");
+    print("=== Channel-like Communication ===\n", .{});
     
     const Channel = struct {
         mutex: Mutex = .{},
@@ -251,20 +251,21 @@ pub fn demonstrateChannels(allocator: std.mem.Allocator) !void {
         const Self = @This();
         
         pub fn init(alloc: std.mem.Allocator) Self {
-            return Self{ .queue = std.ArrayList([]const u8).init(alloc) };
+            _ = alloc;
+            return Self{ .queue = std.ArrayList([]const u8){} };
         }
         
-        pub fn deinit(self: *Self) void {
-            self.queue.deinit();
+        pub fn deinit(self: *Self, alloc: std.mem.Allocator) void {
+            self.queue.deinit(alloc);
         }
         
-        pub fn send(self: *Self, message: []const u8) !void {
+        pub fn send(self: *Self, alloc: std.mem.Allocator, message: []const u8) !void {
             self.mutex.lock();
             defer self.mutex.unlock();
             
             if (self.closed) return;
             
-            try self.queue.append(message);
+            try self.queue.append(alloc, message);
             self.condition.signal();
         }
         
@@ -291,20 +292,20 @@ pub fn demonstrateChannels(allocator: std.mem.Allocator) !void {
     };
     
     var channel = Channel.init(allocator);
-    defer channel.deinit();
+    defer channel.deinit(allocator);
     
     const sender = struct {
-        fn run(ch: *Channel) !void {
+        fn run(ch: *Channel, alloc: std.mem.Allocator) !void {
             const messages = [_][]const u8{ "Hello", "from", "Zig", "threads!" };
             
             for (messages) |msg| {
-                try ch.send(msg);
+                try ch.send(alloc, msg);
                 print("Sent: {s}\n", .{msg});
                 std.time.sleep(100 * std.time.ns_per_ms);
             }
             
             ch.close();
-            print("Channel closed\n");
+            print("Channel closed\n", .{});
         }
     }.run;
     
@@ -314,17 +315,17 @@ pub fn demonstrateChannels(allocator: std.mem.Allocator) !void {
                 print("Received: {s}\n", .{message});
                 std.time.sleep(50 * std.time.ns_per_ms);
             }
-            print("Receiver finished\n");
+            print("Receiver finished\n", .{});
         }
     }.run;
     
-    var sender_thread = try Thread.spawn(.{}, sender, .{&channel});
+    var sender_thread = try Thread.spawn(.{}, sender, .{ &channel, allocator });
     var receiver_thread = try Thread.spawn(.{}, receiver, .{&channel});
     
     sender_thread.join();
     receiver_thread.join();
     
-    print("Channel example completed\n");
+    print("Channel example completed\n", .{});
 }
 
 test "concurrency examples" {

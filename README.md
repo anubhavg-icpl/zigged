@@ -14,14 +14,21 @@ This project demonstrates a well-structured Zig application with:
 
 ```
 hello-world/
-├── build.zig          # Build configuration and targets
-├── build.zig.zon      # Package manifest and dependencies
+├── build.zig                    # Build configuration and targets
+├── build.zig.zon                # Package manifest and dependencies
 ├── src/
-│   ├── main.zig       # Application entry point
-│   └── root.zig       # Library module with reusable functions
-├── zig-out/           # Build output directory
+│   ├── main.zig                 # Application entry point
+│   ├── root.zig                 # Library module with reusable functions
+│   ├── memory_examples.zig      # Memory management demonstrations
+│   ├── strings_examples.zig     # String manipulation examples
+│   ├── file_io_examples.zig     # File I/O operations
+│   ├── error_handling_examples.zig # Error handling patterns
+│   ├── data_structures_examples.zig # Data structures implementations
+│   ├── concurrency_examples.zig # Threading and synchronization
+│   └── comptime_examples.zig    # Compile-time programming
+├── zig-out/                     # Build output directory
 │   └── bin/
-└── .gitignore         # Git ignore patterns for Zig projects
+└── .gitignore                   # Git ignore patterns for Zig projects
 ```
 
 ## ✨ Features
@@ -43,35 +50,98 @@ hello-world/
 - **Test Integration**: Comprehensive test runner configuration
 - **CLI Support**: Command-line argument passing capability
 
-## 🛠️ Build Commands
+## 🛠️ How to Use Examples
 
+### Quick Start
 ```bash
 # Build the project
 zig build
 
-# Run the application
+# Run the main application  
 zig build run
+# Output: "All your codebase are belong to us."
 
-# Run all tests
+# Run ALL example tests at once
 zig build test
+```
 
+### Individual Example Testing
+Each example file can be tested individually:
+
+```bash
+# Memory management examples
+zig test src/memory_examples.zig
+
+# String manipulation examples  
+zig test src/strings_examples.zig
+
+# File I/O examples
+zig test src/file_io_examples.zig
+
+# Error handling examples
+zig test src/error_handling_examples.zig
+
+# Data structures examples
+zig test src/data_structures_examples.zig
+
+# Concurrency examples (threading)
+zig test src/concurrency_examples.zig
+
+# Compile-time examples
+zig test src/comptime_examples.zig
+```
+
+### Advanced Build Options
+```bash
 # Run with fuzz testing
 zig build test -- --fuzz
 
 # Build with optimization
 zig build -Doptimize=ReleaseFast
+
+# Verbose build output
+zig build --verbose
+
+# Clean build artifacts
+rm -rf zig-out zig-cache
 ```
 
-## 🧪 Testing
+## 🧪 What Each Example Teaches
 
-The project includes comprehensive testing:
+### 1. Memory Management (`memory_examples.zig`)
+- **GPA & Arena Allocators**: Different allocation strategies
+- **Slices & Pointers**: Memory views and references
+- **Manual Memory Management**: Create, destroy, alloc, free
 
-1. **Unit Tests**: Basic functionality verification
-2. **Memory Management Tests**: ArrayList operations with proper cleanup
-3. **Fuzz Testing**: Automated edge case discovery
-4. **Module Tests**: Library function validation
+### 2. String Operations (`strings_examples.zig`)  
+- **String Formatting**: bufPrint, allocPrint patterns
+- **String Manipulation**: split, compare, contains, case conversion
+- **Unicode Handling**: UTF-8 processing and code points
 
-Run tests with: `zig build test`
+### 3. File I/O (`file_io_examples.zig`)
+- **File Operations**: Create, read, write, append files
+- **Directory Management**: Create, iterate, delete directories
+- **JSON Handling**: Serialize and deserialize data
+
+### 4. Error Handling (`error_handling_examples.zig`)
+- **Custom Error Types**: Define application-specific errors
+- **Error Propagation**: try/catch patterns and chaining
+- **Resource Cleanup**: defer statements for proper cleanup
+
+### 5. Data Structures (`data_structures_examples.zig`)
+- **Dynamic Arrays**: ArrayList operations and resizing
+- **Hash Maps**: Key-value storage with custom hash functions
+- **Custom Structures**: Queue, Stack, and LinkedList implementations
+
+### 6. Concurrency (`concurrency_examples.zig`)
+- **Threading**: Create and manage multiple threads
+- **Synchronization**: Mutexes, atomic operations, condition variables
+- **Communication**: Producer-consumer and channel patterns
+
+### 7. Compile-time Programming (`comptime_examples.zig`)
+- **Generic Types**: Create reusable data structures
+- **Type Introspection**: Examine types at compile-time
+- **Compile-time Computation**: Calculate values during compilation
 
 ## 📦 Dependencies
 

@@ -12,7 +12,7 @@ pub fn demonstrateAllocators() !void {
     defer arena.deinit();
     const arena_allocator = arena.allocator();
     
-    print("=== Memory Management Examples ===\n");
+    print("=== Memory Management Examples ===\n", .{});
     
     // Single value allocation
     const single_int = try gpa_allocator.create(i32);
@@ -37,7 +37,7 @@ pub fn demonstrateAllocators() !void {
 }
 
 pub fn demonstrateSlices() void {
-    print("\n=== Slice Examples ===\n");
+    print("\n=== Slice Examples ===\n", .{});
     
     var array = [_]i32{ 1, 2, 3, 4, 5, 6, 7, 8 };
     
@@ -56,7 +56,7 @@ pub fn demonstrateSlices() void {
 }
 
 pub fn demonstratePointers() void {
-    print("\n=== Pointer Examples ===\n");
+    print("\n=== Pointer Examples ===\n", .{});
     
     var value: i32 = 100;
     const ptr = &value;

@@ -36,7 +36,7 @@ pub fn demonstrateStringFormatting(allocator: std.mem.Allocator) !void {
     print("Allocated: {s}\n", .{allocated_string});
 }
 
-pub fn demonstrateStringOperations(allocator: std.mem.Allocator) !void {
+pub fn demonstrateStringOperations(_: std.mem.Allocator) !void {
     print("\n=== String Operations ===\n");
     
     const text = "Hello,Zig,Programming,Language";

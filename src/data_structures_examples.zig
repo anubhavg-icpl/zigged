@@ -93,7 +93,7 @@ pub fn demonstrateHashMaps(allocator: std.mem.Allocator) !void {
         y: i32,
         
         pub fn hash(self: @This()) u64 {
-            var hasher = std.hash_map.getAutoHashFn(Point, void){};
+            const hasher = std.hash_map.getAutoHashFn(@This(), void){};
             return hasher(self, {});
         }
         
@@ -146,7 +146,7 @@ pub fn demonstrateLinkedList(allocator: std.mem.Allocator) !void {
     const SLL = std.SinglyLinkedList(i32);
     var sll = SLL{};
     
-    var nodes = try allocator.alloc(SLL.Node, 5);
+    const nodes = try allocator.alloc(SLL.Node, 5);
     defer allocator.free(nodes);
     
     for (nodes, 0..) |*node, i| {

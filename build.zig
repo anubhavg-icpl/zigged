@@ -79,6 +79,13 @@ pub fn build(b: *std.Build) void {
                 // can be extremely useful in case of collisions (which can happen
                 // importing modules from different packages).
                 .{ .name = "hello_world", .module = mod },
+                .{ .name = "memory_examples", .module = b.createModule(.{ .root_source_file = b.path("src/memory_examples.zig"), .target = target, .optimize = optimize }) },
+                .{ .name = "strings_examples", .module = b.createModule(.{ .root_source_file = b.path("src/strings_examples.zig"), .target = target, .optimize = optimize }) },
+                .{ .name = "file_io_examples", .module = b.createModule(.{ .root_source_file = b.path("src/file_io_examples.zig"), .target = target, .optimize = optimize }) },
+                .{ .name = "error_handling_examples", .module = b.createModule(.{ .root_source_file = b.path("src/error_handling_examples.zig"), .target = target, .optimize = optimize }) },
+                .{ .name = "data_structures_examples", .module = b.createModule(.{ .root_source_file = b.path("src/data_structures_examples.zig"), .target = target, .optimize = optimize }) },
+                .{ .name = "concurrency_examples", .module = b.createModule(.{ .root_source_file = b.path("src/concurrency_examples.zig"), .target = target, .optimize = optimize }) },
+                .{ .name = "comptime_examples", .module = b.createModule(.{ .root_source_file = b.path("src/comptime_examples.zig"), .target = target, .optimize = optimize }) },
             },
         }),
     });
@@ -135,12 +142,59 @@ pub fn build(b: *std.Build) void {
     // A run step that will run the second test executable.
     const run_exe_tests = b.addRunArtifact(exe_tests);
 
+    // Individual example test steps
+    const memory_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/memory_examples.zig"), .target = target, .optimize = optimize }) });
+    const strings_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/strings_examples.zig"), .target = target, .optimize = optimize }) });
+    const file_io_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/file_io_examples.zig"), .target = target, .optimize = optimize }) });
+    const error_handling_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/error_handling_examples.zig"), .target = target, .optimize = optimize }) });
+    const data_structures_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/data_structures_examples.zig"), .target = target, .optimize = optimize }) });
+    const concurrency_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/concurrency_examples.zig"), .target = target, .optimize = optimize }) });
+    const comptime_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/comptime_examples.zig"), .target = target, .optimize = optimize }) });
+
+    // Individual test run steps
+    const run_memory_tests = b.addRunArtifact(memory_tests);
+    const run_strings_tests = b.addRunArtifact(strings_tests);
+    const run_file_io_tests = b.addRunArtifact(file_io_tests);
+    const run_error_handling_tests = b.addRunArtifact(error_handling_tests);
+    const run_data_structures_tests = b.addRunArtifact(data_structures_tests);
+    const run_concurrency_tests = b.addRunArtifact(concurrency_tests);
+    const run_comptime_tests = b.addRunArtifact(comptime_tests);
+
+    // Individual test steps
+    const memory_step = b.step("test-memory", "Run memory management examples");
+    memory_step.dependOn(&run_memory_tests.step);
+    
+    const strings_step = b.step("test-strings", "Run string manipulation examples");
+    strings_step.dependOn(&run_strings_tests.step);
+    
+    const file_io_step = b.step("test-file-io", "Run file I/O examples");
+    file_io_step.dependOn(&run_file_io_tests.step);
+    
+    const error_handling_step = b.step("test-error-handling", "Run error handling examples");
+    error_handling_step.dependOn(&run_error_handling_tests.step);
+    
+    const data_structures_step = b.step("test-data-structures", "Run data structures examples");
+    data_structures_step.dependOn(&run_data_structures_tests.step);
+    
+    const concurrency_step = b.step("test-concurrency", "Run concurrency examples");
+    concurrency_step.dependOn(&run_concurrency_tests.step);
+    
+    const comptime_step = b.step("test-comptime", "Run compile-time examples");
+    comptime_step.dependOn(&run_comptime_tests.step);
+
     // A top level step for running all tests. dependOn can be called multiple
     // times and since the two run steps do not depend on one another, this will
     // make the two of them run in parallel.
-    const test_step = b.step("test", "Run tests");
+    const test_step = b.step("test", "Run all tests");
     test_step.dependOn(&run_mod_tests.step);
     test_step.dependOn(&run_exe_tests.step);
+    test_step.dependOn(&run_memory_tests.step);
+    test_step.dependOn(&run_strings_tests.step);
+    test_step.dependOn(&run_file_io_tests.step);
+    test_step.dependOn(&run_error_handling_tests.step);
+    test_step.dependOn(&run_data_structures_tests.step);
+    test_step.dependOn(&run_concurrency_tests.step);
+    test_step.dependOn(&run_comptime_tests.step);
 
     // Just like flags, top level steps are also listed in the `--help` menu.
     //

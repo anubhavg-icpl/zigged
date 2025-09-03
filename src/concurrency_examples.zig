@@ -25,7 +25,7 @@ pub fn demonstrateBasicThreads(allocator: std.mem.Allocator) !void {
     
     // Create multiple threads
     const thread_count = 3;
-    var threads = try allocator.alloc(Thread, thread_count);
+    const threads = try allocator.alloc(Thread, thread_count);
     defer allocator.free(threads);
     
     // Start threads
@@ -80,7 +80,7 @@ pub fn demonstrateMutex(allocator: std.mem.Allocator) !void {
     }.run;
     
     const thread_count = 3;
-    var threads = try allocator.alloc(Thread, thread_count);
+    const threads = try allocator.alloc(Thread, thread_count);
     defer allocator.free(threads);
     
     // Start threads that increment counter

@@ -50,59 +50,68 @@ hello-world/
 - **Test Integration**: Comprehensive test runner configuration
 - **CLI Support**: Command-line argument passing capability
 
-## 🛠️ How to Use Examples
+## 🛠️ CLI Usage - Interactive Learning
 
-### Quick Start
+### 🚀 **Main CLI Interface**
 ```bash
-# Build the project
-zig build
-
-# Run the main application  
+# Show help menu and available examples
 zig build run
-# Output: "All your codebase are belong to us."
 
-# Run ALL example tests at once
-zig build test
+# Run specific examples interactively
+zig build run -- memory         # 🧠 Memory management
+zig build run -- strings        # 📝 String operations  
+zig build run -- file-io        # 📁 File I/O operations
+zig build run -- errors         # ⚠️  Error handling
+zig build run -- data           # 📊 Data structures
+zig build run -- concurrency    # 🔄 Threading
+zig build run -- comptime       # ⚡ Compile-time programming
+
+# Run ALL examples in sequence
+zig build run -- all            # 🎯 Complete walkthrough
 ```
 
-### Individual Example Testing
-Each example file can be tested individually:
+### 🧪 **Individual Example Testing**  
+Test specific topics using build commands:
 
 ```bash
-# Memory management examples
+# Individual test commands
+zig build test-memory            # Memory management only
+zig build test-strings           # String manipulation only  
+zig build test-file-io           # File I/O operations only
+zig build test-error-handling    # Error handling patterns only
+zig build test-data-structures   # Data structures only
+zig build test-concurrency       # Threading/sync only
+zig build test-comptime          # Compile-time programming only
+
+# Run all tests (traditional)
+zig build test                   # Everything at once
+```
+
+### 🔧 **Direct File Testing**
+For advanced users who want to test files directly:
+
+```bash
+# Direct file testing (bypass build system)
 zig test src/memory_examples.zig
-
-# String manipulation examples  
 zig test src/strings_examples.zig
-
-# File I/O examples
 zig test src/file_io_examples.zig
-
-# Error handling examples
-zig test src/error_handling_examples.zig
-
-# Data structures examples
-zig test src/data_structures_examples.zig
-
-# Concurrency examples (threading)
-zig test src/concurrency_examples.zig
-
-# Compile-time examples
-zig test src/comptime_examples.zig
+# ... etc
 ```
 
-### Advanced Build Options
+### ⚙️ **Advanced Options**
 ```bash
-# Run with fuzz testing
+# Build optimizations
+zig build -Doptimize=ReleaseFast
+zig build -Doptimize=ReleaseSmall
+
+# Verbose output for debugging
+zig build --verbose
+zig build test --verbose
+
+# Fuzzing (for compatible tests)
 zig build test -- --fuzz
 
-# Build with optimization
-zig build -Doptimize=ReleaseFast
-
-# Verbose build output
-zig build --verbose
-
-# Clean build artifacts
+# Clean build artifacts  
 rm -rf zig-out zig-cache
 ```
 
